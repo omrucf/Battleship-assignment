@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.assignment_2;
 
+package assignment2;
 /**
  *
  * @author Mohammed Ayoub

@@ -28,10 +28,9 @@ class Cell extends JButton {
     }
 
     public void fire() {
-        if(!isFired)
-        {
+        if (!isFired) {
             isFired = true;
-            if(hasShip)
+            if (hasShip)
                 this.setBackground(Color.RED);
             else
                 this.setBackground(Color.WHITE);

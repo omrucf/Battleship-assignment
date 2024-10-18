@@ -5,7 +5,7 @@ import java.awt.*;
 
 class Board extends JPanel {
     private Cell[][] cells;
-    private int[] shipLengths = {5, 4, 3, 2, 1};
+    private int[] shipLengths = { 5, 4, 3, 2, 1 };
     private int completeShips = 0;
     private int total_ships;
     private String mode = "Easy";
@@ -185,11 +185,14 @@ class Board extends JPanel {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                if (cells[row][col].hasShip()) totalShips++;
+                if (cells[row][col].hasShip())
+                    totalShips++;
                 if (!cells[row][col].isIdle()) {
                     attempts++;
-                    if (cells[row][col].hasShip()) hitCount++;
-                    else missCount++;
+                    if (cells[row][col].hasShip())
+                        hitCount++;
+                    else
+                        missCount++;
                 }
             }
         }

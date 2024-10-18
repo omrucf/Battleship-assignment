@@ -13,8 +13,6 @@ public class Battleship extends JFrame implements ActionListener {
     private JButton showStatisticsButton;
     private JComboBox<String> diffBox;
 
-
-
     public Battleship() {
         setTitle("Battleship");
         setSize(600, 600);
@@ -30,7 +28,7 @@ public class Battleship extends JFrame implements ActionListener {
         revealButton = new JButton("Reveal");
         showStatisticsButton = new JButton("Show Game Statistics");
 
-        String[] levels = {"Easy", "Medium", "Hard"};
+        String[] levels = { "Easy", "Medium", "Hard" };
         diffBox = new JComboBox<>(levels);
 
         startNewGameButton.addActionListener(this);
@@ -60,15 +58,14 @@ public class Battleship extends JFrame implements ActionListener {
         } else if (e.getSource() == showStatisticsButton) {
             JOptionPane.showMessageDialog(this, "Displaying game statistics...");
             playerBoard.showStatistics(); // Display game statistics
-        }
-        else if (e.getSource() == diffBox) { // Handle JComboBox selection
+        } else if (e.getSource() == diffBox) { // Handle JComboBox selection
             String selectedOption = (String) diffBox.getSelectedItem();
             JOptionPane.showMessageDialog(this, "Changing mode to: " + selectedOption + "...");
             playerBoard.setMode(selectedOption);
             playerBoard.resetBoard();
-            if(selectedOption == "Easy")
+            if (selectedOption == "Easy")
                 playerBoard.setTrials(40);
-            else if(selectedOption == "Medium")
+            else if (selectedOption == "Medium")
                 playerBoard.setTrials(30);
             else if (selectedOption == "Hard")
                 playerBoard.setTrials(20);
