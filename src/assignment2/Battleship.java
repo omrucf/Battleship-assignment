@@ -54,7 +54,7 @@ public class Battleship extends JFrame implements ActionListener {
             playerBoard.resetBoard();
         } else if (e.getSource() == revealButton) {
             JOptionPane.showMessageDialog(this, "Revealing ship locations...");
-            playerBoard.revealShips();// Logic to reveal the ships on the board
+            playerBoard.revealShips(false);// Logic to reveal the ships on the board
         } else if (e.getSource() == showStatisticsButton) {
             JOptionPane.showMessageDialog(this, "Displaying game statistics...");
             playerBoard.showStatistics(); // Display game statistics
