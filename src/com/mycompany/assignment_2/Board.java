@@ -1,321 +1,211 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.assignment_2;
-
-/**
- *
- * @author Mohammed Ayoub
- */
+package assignment2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class Board extends JPanel {
-    private JButton[][] cells;
-    private boolean[][] hasShip;
-    private boolean[][] isFired;
+    private Cell[][] cells;  // Now using Cell class for each tile
     private int[] shipLengths = {5, 4, 3, 2, 1}; // Lengths of each ship type
     private int completeShips = 0; // Track complete ships found
     private int total_ships;
     private String mode = "Easy";
     private int trials = 40;
     private int IDC = 0;
-    private int [][] ships_id;
-    private String [][] ships_type;
-    
-
+    private int[][] ships_id;
+    private String[][] ships_type;
 
     public Board() {
-    	 // Set the look and feel to ensure consistent rendering
+        // Set the look and feel to ensure consistent rendering
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        // 10x10 grid layout
+
+        // Initialize 10x10 grid for the main game board
         setLayout(new GridLayout(10, 10, 10, 10));
-        cells = new JButton[10][10];
-        hasShip = new boolean[10][10];
-        isFired = new boolean[10][10];
-        
-        ships_id = new int [10][10];
-        ships_type = new String [10][10];
-        
-        
+        cells = new Cell[10][10];  // Using Cell objects now
+        ships_id = new int[10][10];
+        ships_type = new String[10][10];
+
         // Initialize each cell in the grid and set up properties
-        
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                cells[row][col] = new JButton();
-                cells[row][col].setBackground(Color.BLUE);
-                cells[row][col].setPreferredSize(new Dimension(50, 50));
-                cells[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK, 0, true));
-
-//                hasShip[row][col] = Math.random() < 0.2;
-//                placeAllShips();
+                cells[row][col] = new Cell(this, false);  // Initialize as empty cells
                 ships_id[row][col] = -1;
                 ships_type[row][col] = "None";
-                isFired[row][col] = false;
-                hasShip[row][col] = false;
 
                 // Set up ActionListener for each cell
                 int currentRow = row;
                 int currentCol = col;
-                cells[row][col].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        fireAtCell(currentRow, currentCol);
-                    }
-                });
+                cells[row][col].addActionListener(e -> fireAtCell(currentRow, currentCol));
 
                 add(cells[row][col]);
             }
         }
+
         placeAllShips();
     }
 
-    public void placeAllShips() 
-    {
-    	
-    	for(int i = 0; i < shipLengths.length; i++)
-    	{
-    		if(mode == "Easy")
-    			total_ships = 3;
-    		else if(mode == "Medium")
-    			total_ships = 2;
-    		else if (mode == "Hard")
-    			total_ships = 1;
-    		while(total_ships > 0)
-    			placeShip(shipLengths[i]);
-    	}
-    	
-    	printBoard();
-    	
-    	for(int i = 0; i < 10; i++)
-    	{
-    		for(int j = 0; j < 10; j++)
-				System.out.printf("%-3s",ships_id[i][j]);
-    		System.out.print("\n");
-    	}
-    	return;
-    }
-    
-    private void placeShip(int ship_size)
-    {
-    	boolean vertical = Math.random() < 0.5 ? false : true;
-    	
-    	int start_row = (int) (Math.random() * 10);
-    	int start_col = (int) (Math.random() * 10);    	
-    	System.out.printf("strw: %d, stcl: %d, shsz: %d\n", start_row, start_col, ship_size );
-    	
-    	boolean canPlace = true;
-    	
-    	if(start_row + ship_size - 1 < 9 && vertical)
-    	{
-    		
-    		for (int i = 0; i < ship_size; i++)
-    		{
-    			if(hasShip[start_row + i][start_col])
-    			{
-    				canPlace = false;
-    			}
-    			if(start_col + 1 != 10 && hasShip[start_row + i][start_col + 1])
-    			{
-    				canPlace = false;
-    			}
-    			if(start_col - 1 != -1 && hasShip[start_row + i][start_col - 1])
-    			{
-    				canPlace = false;
-    			}
-    		}
-    		
-    		if(canPlace)
-    		{
-    			for (int i = 0; i < ship_size; i++)
-    			{
-    				hasShip[start_row + i][start_col] = true;
-    				ships_id[start_row + i][start_col] = IDC;
-    				if(ship_size == 5)
-    	    			ships_type[start_row + i][start_col] = "Aircraft carrier";
-    				else if(ship_size == 4)
-    	    			ships_type[start_row + i][start_col] = "Battleship";
-    				else if(ship_size == 3)
-    	    			ships_type[start_row + i][start_col] = "Destroyer";
-    				else if(ship_size == 2)
-    	    			ships_type[start_row + i][start_col] = "Submarine";
-    				else if(ship_size == 1)
-    	    			ships_type[start_row + i][start_col] = "Patrol boat";
-    			}
-    			IDC++;
-    			total_ships--;
-    		}
-    		
-    	}
-    	else if (start_col + ship_size - 1 < 9 && !vertical)
-    	{
-    		for (int i = 0; i < ship_size; i++)
-    		{
-    			if(hasShip[start_row][start_col + i])
-    			{
-    				canPlace = false;
-    			}
-    			if(start_row + 1 != 10 && hasShip[start_row + 1][start_col + i])
-    			{
-    				canPlace = false;
-    			}
-    			if(start_row - 1 != -1 && hasShip[start_row - 1][start_col + i])
-    			{
-    				canPlace = false;
-    			}
-    		}
-    		
-    		if(canPlace)
-    		{
-    			for (int i = 0; i < ship_size; i++)
-    			{
-    				hasShip[start_row][start_col + i] = true;
-    				ships_id[start_row][start_col + i] = IDC;
-    				if(ship_size == 5)
-    	    			ships_type[start_row][start_col + i] = "Aircraft carrier";
-    				else if(ship_size == 4)
-    	    			ships_type[start_row][start_col + i] = "Battleship";
-    				else if(ship_size == 3)
-    	    			ships_type[start_row][start_col + i] = "Destroyer";
-    				else if(ship_size == 2)
-    	    			ships_type[start_row][start_col + i] = "Submarine";
-    				else if(ship_size == 1)
-    	    			ships_type[start_row][start_col + i] = "Patrol boat";
-    				
-    			}
-    			IDC++;
-    			total_ships--;
-    		}
-    	}
-    		
-    	
+    // Method to place all ships on the board randomly
+    public void placeAllShips() {
+        for (int i = 0; i < shipLengths.length; i++) {
+            if (mode.equals("Easy"))
+                total_ships = 3;
+            else if (mode.equals("Medium"))
+                total_ships = 2;
+            else if (mode.equals("Hard"))
+                total_ships = 1;
+
+            while (total_ships > 0)
+                placeShip(shipLengths[i]);
+        }
     }
 
-    private void fireAtCell(int row, int col) {
-        if (!isFired[row][col]) {
-            isFired[row][col] = true;
-            trials--; 
-            
-            if (hasShip[row][col]) {
-            	boolean last = true;
-                int id = ships_id[row][col];
-                ships_id[row][col] = -1;
-                if(row + 1 != 10 && ships_id[row + 1][col] == id)
-                	last = false;
-                if(row - 1 != -1 && ships_id[row - 1][col] == id)
-                	last = false;
-                if(col + 1 != 10 && ships_id[row][col + 1] == id)
-                	last = false;
-                if(col - 1 != -1 && ships_id[row][col - 1] == id)
-                	last = false;
-                
-                if(last)
-                	this.completeShips++;
-                cells[row][col].setBackground(Color.RED);
-            } else {
-                cells[row][col].setBackground(Color.WHITE);
+    // Method to place a single ship on the board
+    private void placeShip(int ship_size) {
+        boolean vertical = Math.random() < 0.5;
+        int start_row = (int) (Math.random() * 10);
+        int start_col = (int) (Math.random() * 10);
+
+        boolean canPlace = true;
+        if (vertical && start_row + ship_size - 1 < 10) {
+            for (int i = 0; i < ship_size; i++) {
+                if (cells[start_row + i][start_col].hasShip()) {
+                    canPlace = false;
+                }
             }
-            if(trials == 0)
-            {
-            	showStatistics();
-            	revealShips();
-            	
+            if (canPlace) {
+                for (int i = 0; i < ship_size; i++) {
+                    cells[start_row + i][start_col].setHasShip(true);
+                    ships_id[start_row + i][start_col] = IDC;
+                    ships_type[start_row + i][start_col] = getShipType(ship_size);
+                }
+                IDC++;
+                total_ships--;
+            }
+        } else if (!vertical && start_col + ship_size - 1 < 10) {
+            for (int i = 0; i < ship_size; i++) {
+                if (cells[start_row][start_col + i].hasShip()) {
+                    canPlace = false;
+                }
+            }
+            if (canPlace) {
+                for (int i = 0; i < ship_size; i++) {
+                    cells[start_row][start_col + i].setHasShip(true);
+                    ships_id[start_row][start_col + i] = IDC;
+                    ships_type[start_row][start_col + i] = getShipType(ship_size);
+                }
+                IDC++;
+                total_ships--;
             }
         }
     }
 
+    // Method to return the ship type based on size
+    private String getShipType(int ship_size) {
+        switch (ship_size) {
+            case 5: return "Aircraft carrier";
+            case 4: return "Battleship";
+            case 3: return "Destroyer";
+            case 2: return "Submarine";
+            case 1: return "Patrol boat";
+            default: return "None";
+        }
+    }
+
+    // Modify the revealShips method to show the ships on the board as 0s and 1s in a message dialog
+    public void revealShips() {
+        StringBuilder boardRepresentation = new StringBuilder();
+
+        // Step 1: Build the string representation of the board with 0s and 1s for the message dialog
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                cells[row][col].fire(); // Mark all cells as fired to reveal them
+
+                // Add 1 or 0 to the boardRepresentation string for each cell
+                boardRepresentation.append(cells[row][col].toString());
+
+                // Step 2: Reveal the ships visually with different colors on the board
+                if (cells[row][col].hasShip()) {
+                    if (ships_type[row][col].equals("Aircraft carrier")) {
+                        cells[row][col].setBackground(Color.GREEN);
+                    } else if (ships_type[row][col].equals("Battleship")) {
+                        cells[row][col].setBackground(Color.ORANGE);
+                    } else if (ships_type[row][col].equals("Destroyer")) {
+                        cells[row][col].setBackground(Color.YELLOW);
+                    } else if (ships_type[row][col].equals("Submarine")) {
+                        cells[row][col].setBackground(Color.LIGHT_GRAY);
+                    } else if (ships_type[row][col].equals("Patrol boat")) {
+                        cells[row][col].setBackground(Color.CYAN);
+                    }
+                    cells[row][col].repaint(); // Ensure the cell is repainted
+                }
+            }
+            boardRepresentation.append("\n"); // Move to the next line after each row
+        }
+
+        // Step 3: Display the board representation (0s and 1s) in a message dialog
+        JOptionPane.showMessageDialog(this, boardRepresentation.toString(),
+                "Revealed Ship Locations",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Method to fire at a cell (game logic)
+    private void fireAtCell(int row, int col) {
+        if (cells[row][col].isIdle()) {
+            cells[row][col].fire();
+            trials--;
+
+            if (trials == 0) {
+                revealShips(); // Automatically reveal ships if trials are over
+            }
+        }
+    }
 
     public void resetBoard() {
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                cells[row][col].setBackground(Color.BLUE);
-                hasShip[row][col] = false;
-                isFired[row][col] = false;
+                cells[row][col].reset();
                 ships_id[row][col] = -1;
                 ships_type[row][col] = "None";
-                IDC = 0;
-                completeShips = 0;
-                cells[row][col].repaint(); // Ensure the cell is repainted
             }
         }
+        IDC = 0;
+        completeShips = 0;
         placeAllShips();
+        revalidate();
+        repaint();
     }
 
-    public void revealShips() {
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-            	isFired[row][col] = true;
-                if (hasShip[row][col]) {
-//                    cells[row][col].setBackground(Color.GRAY);
-                	if(ships_type[row][col] == "Aircraft carrier")
-                		cells[row][col].setBackground(Color.GREEN);
-                	if(ships_type[row][col] == "Battleship")
-                		cells[row][col].setBackground(Color.ORANGE);
-                	if(ships_type[row][col] == "Destroyer")
-                		cells[row][col].setBackground(Color.YELLOW);
-                	if(ships_type[row][col] == "Submarine")
-                		cells[row][col].setBackground(Color.LIGHT_GRAY);
-                	if(ships_type[row][col] == "Patrol boat")
-                		cells[row][col].setBackground(Color.CYAN);
-                    cells[row][col].repaint(); // Ensure the cell is repainted
-                }
-            }
-        }
+    public void setMode(String m) {
+        this.mode = m;
     }
-    
-    public void printBoard()
-    {
-    	for(int i = 0; i < 10; i++)
-    	{
-    		for(int j = 0; j < 10; j++)
-    			if(hasShip[i][j])
-    				System.out.print(1);
-    			else
-    				System.out.print(0);
-    		System.out.print("\n");
-    	}
-    }
-    
-    public void setMode(String m)
-    {
-    	this.mode = m;
-    }
-    
-    public void setTrials(int t)
-    {
-    	this.trials = t;
+
+    public void setTrials(int t) {
+        this.trials = t;
     }
 
     public void showStatistics() {
         int totalShips = shipLengths.length; // Total ships based on lengths array
         int hitCount = 0, missCount = 0, attempts = 0;
-        
+
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                if (hasShip[row][col]) totalShips++;
-                if (isFired[row][col]) {
+                if (cells[row][col].hasShip()) totalShips++;
+                if (!cells[row][col].isIdle()) {
                     attempts++;
-                    if (hasShip[row][col]) hitCount++;
+                    if (cells[row][col].hasShip()) hitCount++;
                     else missCount++;
                 }
             }
         }
 
-        JOptionPane.showMessageDialog(this, 
-            "Total Ships: " + IDC + "\n" +
-            "Hits: " + hitCount + "\n" +
-            "Misses: " + missCount + "\n" +
-            "Attempts: " + attempts + "\n" +
-            "Complete Ships: " + completeShips); // Include complete ships in stats
+        JOptionPane.showMessageDialog(this,
+                "Total Ships: " + IDC + "\n" +
+                        "Hits: " + hitCount + "\n" +
+                        "Misses: " + missCount + "\n" +
+                        "Attempts: " + attempts + "\n" +
+                        "Complete Ships: " + completeShips); // Include complete ships in stats
     }
-
 }
