@@ -13,6 +13,7 @@ class Board extends JPanel {
     private int IDC = 0;
     private int[][] ships_id;
     private String[][] ships_type;
+    private JLabel remainingAttemptsLabel;  // Label for showing remaining attempts
 
     public Board() {
         try {
@@ -21,7 +22,10 @@ class Board extends JPanel {
             e.printStackTrace();
         }
 
-        setLayout(new GridLayout(10, 10, 10, 10));
+        setLayout(new BorderLayout()); // Use BorderLayout to add label below
+
+        // Create a panel for the game grid
+        JPanel gridPanel = new JPanel(new GridLayout(10, 10, 10, 10));
         cells = new Cell[10][10];
         ships_id = new int[10][10];
         ships_type = new String[10][10];
@@ -36,9 +40,17 @@ class Board extends JPanel {
                 int currentCol = col;
                 cells[row][col].addActionListener(e -> fireAtCell(currentRow, currentCol));
 
-                add(cells[row][col]);
+                gridPanel.add(cells[row][col]);
             }
         }
+
+        // Add grid panel to center
+        add(gridPanel, BorderLayout.CENTER);
+
+        // Create and add label for remaining attempts
+        remainingAttemptsLabel = new JLabel("Remaining Attempts: " + trials);
+        remainingAttemptsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(remainingAttemptsLabel, BorderLayout.SOUTH);  // Place label at the bottom
 
         placeAllShips();
     }
@@ -153,6 +165,9 @@ class Board extends JPanel {
             cells[row][col].fire();
             trials--;
 
+            // Update remaining attempts label
+            remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
+
             if (trials == 0) {
                 revealShips();
             }
@@ -169,6 +184,8 @@ class Board extends JPanel {
         }
         IDC = 0;
         completeShips = 0;
+        setTrialsBasedOnMode(); // Reset trials based on mode
+        remainingAttemptsLabel.setText("Remaining Attempts: " + trials); // Update label
         placeAllShips();
         revalidate();
         repaint();
@@ -176,14 +193,30 @@ class Board extends JPanel {
 
     public void setMode(String m) {
         this.mode = m;
+        setTrialsBasedOnMode();  // Set trials when mode changes
+        remainingAttemptsLabel.setText("Remaining Attempts: " + trials);  // Update label
+    }
+
+    private void setTrialsBasedOnMode() {
+        switch (mode) {
+            case "Easy":
+                trials = 40;
+                break;
+            case "Medium":
+                trials = 30;
+                break;
+            case "Hard":
+                trials = 20;
+                break;
+        }
     }
 
     public void setTrials(int t) {
         this.trials = t;
+        remainingAttemptsLabel.setText("Remaining Attempts: " + trials);  // Update label
     }
 
     public void showStatistics() {
-
         int hitCount = 0, missCount = 0, attempts = 0;
 
         for (int row = 0; row < 10; row++) {
