@@ -193,6 +193,13 @@ class Board extends JPanel {
             cells[row][col].fire();
             trials--;
 
+            // Update remaining attempts label
+            remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
+
+            if (trials == 0) {
+                revealShips(true);
+            }
+
 
         }
     }
@@ -207,6 +214,16 @@ class Board extends JPanel {
         }
         IDC = 0;
         completeShips = 0;
+
+        setTrialsBasedOnMode();
+        remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
+
+        if (mode == "Easy")
+            setTrials(40);
+        else if (mode == "Medium")
+            setTrials(30);
+        else if (mode == "Hard")
+            setTrials(20);
 
         placeAllShips();
         revalidate();
