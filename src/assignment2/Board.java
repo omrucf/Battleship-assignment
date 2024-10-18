@@ -122,7 +122,7 @@ class Board extends JPanel {
         }
     }
 
-    public void revealShips() {
+    public void revealShips(boolean failed) {
         StringBuilder boardRepresentation = new StringBuilder();
 
         for (int row = 0; row < 10; row++) {
@@ -152,9 +152,40 @@ class Board extends JPanel {
             boardRepresentation.append("\n");
         }
 
-        JOptionPane.showMessageDialog(this, boardRepresentation.toString(),
-                "Revealed Ship Locations",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (failed) {
+            int hitCount = 0, missCount = 0, attempts = 0;
+
+            for (int ro = 0; ro < 10; ro++) {
+                for (int co = 0; co < 10; co++) {
+                    if (!cells[ro][co].isIdle()) {
+                        attempts++;
+                        if (cells[ro][co].hasShip())
+                            hitCount++;
+                        else
+                            missCount++;
+                    }
+                }
+            }
+
+            var choice = JOptionPane.showConfirmDialog(this,
+                    "Game Over!\n*****************************\nTotal Ships: " + IDC + "\n" +
+                            "Hits: " + hitCount + "\n" +
+                            "Misses: " + missCount + "\n" +
+                            "Attempts: " + attempts + "\n" +
+                            "Complete Ships: " + completeShips + "\n*****************************\nTry Again?",
+                    "Game Over!",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (choice == 0)
+                this.resetBoard();
+            else
+                JOptionPane.showMessageDialog(this, boardRepresentation.toString(),
+                        "Revealed Ship Locations",
+                        JOptionPane.INFORMATION_MESSAGE);
+        } else
+            JOptionPane.showMessageDialog(this, boardRepresentation.toString(),
+                    "Revealed Ship Locations",
+                    JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void fireAtCell(int row, int col) {
@@ -162,12 +193,7 @@ class Board extends JPanel {
             cells[row][col].fire();
             trials--;
 
-            // Update remaining attempts label
-            remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
 
-            if (trials == 0) {
-                revealShips();
-            }
         }
     }
 
@@ -181,8 +207,7 @@ class Board extends JPanel {
         }
         IDC = 0;
         completeShips = 0;
-        setTrialsBasedOnMode();
-        remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
+
         placeAllShips();
         revalidate();
         repaint();
