@@ -47,7 +47,7 @@ class Board extends JPanel {
 
         remainingAttemptsLabel = new JLabel("Remaining Attempts: " + trials);
         remainingAttemptsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(remainingAttemptsLabel, BorderLayout.SOUTH);  // Place label at the bottom
+        add(remainingAttemptsLabel, BorderLayout.SOUTH); // Place label at the bottom
 
         placeAllShips();
     }
@@ -192,6 +192,26 @@ class Board extends JPanel {
         if (cells[row][col].isIdle()) {
             cells[row][col].fire();
             trials--;
+            if (cells[row][col].hasShip()) {
+                boolean last = true;
+                int id = ships_id[row][col];
+                ships_id[row][col] = -1;
+                if (row + 1 != 10 && ships_id[row + 1][col] == id)
+                    last = false;
+                if (row - 1 != -1 && ships_id[row - 1][col] == id)
+                    last = false;
+                if (col + 1 != 10 && ships_id[row][col + 1] == id)
+                    last = false;
+                if (col - 1 != -1 && ships_id[row][col - 1] == id)
+                    last = false;
+
+                if (last) {
+                    this.completeShips++;
+                    JOptionPane.showMessageDialog(this,
+                            "Ship of type: " + ships_type[row][col] + " is sunk!");
+                }
+
+            }
 
             // Update remaining attempts label
             remainingAttemptsLabel.setText("Remaining Attempts: " + trials);
@@ -199,7 +219,6 @@ class Board extends JPanel {
             if (trials == 0) {
                 revealShips(true);
             }
-
 
         }
     }
