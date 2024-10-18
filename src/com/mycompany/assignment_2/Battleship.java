@@ -1,14 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.assignment_2;
-
-/**
- *
- * @author Mohammed Ayoub
- */
-
+package assignment2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,29 +12,24 @@ public class Battleship extends JFrame implements ActionListener {
     private JButton revealButton;
     private JButton showStatisticsButton;
     private JComboBox<String> diffBox;
-    
-    
+
+
 
     public Battleship() {
-        // Set up the JFrame properties
         setTitle("Battleship");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create the main board for the player
         playerBoard = new Board();
 
-        // Add padding around the player board
         playerBoard.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add this line
 
-
-        // Create control buttons
         JPanel controlPanel = new JPanel();
         startNewGameButton = new JButton("Start New Game");
         revealButton = new JButton("Reveal");
         showStatisticsButton = new JButton("Show Game Statistics");
-        
+
         String[] levels = {"Easy", "Medium", "Hard"};
         diffBox = new JComboBox<>(levels);
 
@@ -82,15 +67,14 @@ public class Battleship extends JFrame implements ActionListener {
             playerBoard.setMode(selectedOption);
             playerBoard.resetBoard();
             if(selectedOption == "Easy")
-    			playerBoard.setTrials(40);
-    		else if(selectedOption == "Medium")
-    			playerBoard.setTrials(30);
-    		else if (selectedOption == "Hard")
-    			playerBoard.setTrials(20);
+                playerBoard.setTrials(40);
+            else if(selectedOption == "Medium")
+                playerBoard.setTrials(30);
+            else if (selectedOption == "Hard")
+                playerBoard.setTrials(20);
         }
     }
 
-    // Main method to run the application
     public static void main(String[] args) {
         new Battleship();
     }
