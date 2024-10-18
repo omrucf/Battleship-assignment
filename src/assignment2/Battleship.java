@@ -73,6 +73,15 @@ public class Battleship extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+
+        System.out.println("************************************************************");
+        System.out.println("*                                                          *");
+        System.out.println("*          Names: Mohamed Ayoub and Omar Yossuf            *");
+        System.out.println("*          SIDs:  900212213 and 900212166                  *");
+        System.out.println("*          Sec: 01                                         *");     
+        System.out.println("*                                                          *");
+        System.out.println("************************************************************");
+        System.out.println();
         new Battleship();
     }
 }

@@ -118,7 +118,7 @@ class Board extends JPanel {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                cells[row][col].fire();
+                // cells[row][col].fire();
 
                 boardRepresentation.append(cells[row][col].toString());
 
@@ -130,10 +130,15 @@ class Board extends JPanel {
                     } else if (ships_type[row][col].equals("Destroyer")) {
                         cells[row][col].setBackground(Color.YELLOW);
                     } else if (ships_type[row][col].equals("Submarine")) {
-                        cells[row][col].setBackground(Color.LIGHT_GRAY);
+                        cells[row][col].setBackground(Color.GRAY);
                     } else if (ships_type[row][col].equals("Patrol boat")) {
                         cells[row][col].setBackground(Color.CYAN);
                     }
+                    cells[row][col].repaint();
+                }
+                else
+                {
+                    cells[row][col].setBackground(Color.WHITE);
                     cells[row][col].repaint();
                 }
             }
@@ -180,13 +185,13 @@ class Board extends JPanel {
     }
 
     public void showStatistics() {
-        int totalShips = shipLengths.length;
+
         int hitCount = 0, missCount = 0, attempts = 0;
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
                 if (cells[row][col].hasShip())
-                    totalShips++;
+
                 if (!cells[row][col].isIdle()) {
                     attempts++;
                     if (cells[row][col].hasShip())
