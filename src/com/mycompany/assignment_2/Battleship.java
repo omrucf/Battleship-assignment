@@ -1,14 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.assignment_2;
-
-/**
- *
- * @author Mohammed Ayoub
- */
-
+package assignment2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +12,8 @@ public class Battleship extends JFrame implements ActionListener {
     private JButton revealButton;
     private JButton showStatisticsButton;
     private JComboBox<String> diffBox;
-    
-    
+
+
 
     public Battleship() {
         // Set up the JFrame properties
@@ -44,7 +34,7 @@ public class Battleship extends JFrame implements ActionListener {
         startNewGameButton = new JButton("Start New Game");
         revealButton = new JButton("Reveal");
         showStatisticsButton = new JButton("Show Game Statistics");
-        
+
         String[] levels = {"Easy", "Medium", "Hard"};
         diffBox = new JComboBox<>(levels);
 
@@ -82,11 +72,11 @@ public class Battleship extends JFrame implements ActionListener {
             playerBoard.setMode(selectedOption);
             playerBoard.resetBoard();
             if(selectedOption == "Easy")
-    			playerBoard.setTrials(40);
-    		else if(selectedOption == "Medium")
-    			playerBoard.setTrials(30);
-    		else if (selectedOption == "Hard")
-    			playerBoard.setTrials(20);
+                playerBoard.setTrials(40);
+            else if(selectedOption == "Medium")
+                playerBoard.setTrials(30);
+            else if (selectedOption == "Hard")
+                playerBoard.setTrials(20);
         }
     }
 
