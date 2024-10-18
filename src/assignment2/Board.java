@@ -135,9 +135,7 @@ class Board extends JPanel {
                         cells[row][col].setBackground(Color.CYAN);
                     }
                     cells[row][col].repaint();
-                }
-                else
-                {
+                } else {
                     cells[row][col].setBackground(Color.WHITE);
                     cells[row][col].repaint();
                 }
@@ -190,8 +188,6 @@ class Board extends JPanel {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                if (cells[row][col].hasShip())
-
                 if (!cells[row][col].isIdle()) {
                     attempts++;
                     if (cells[row][col].hasShip())
